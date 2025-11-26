@@ -2,7 +2,12 @@
     <div class="container">
     <h2>Categorías</h2>
     <router-link :to="{name: 'categorias_create'}"><button>Crear Categoría</button></router-link>
-  <table class="table table-striped mt-3">
+    
+    <div v-if="categorias.length === 0" class="alert alert-info mt-3">
+      No hay categorías registradas. Haz clic en "Crear Categoría" para agregar una.
+    </div>
+
+    <table v-else class="table table-striped mt-3">
       <thead>
         <tr>
           <th>ID</th>
@@ -15,8 +20,8 @@
           <td>{{ categoria.id }}</td>
           <td>{{ categoria.nombre }}</td>
           <td>
-           <router-link :to="{name: 'categorias_show', params: {id: categoria.id }}"><button>Mostrar</button></router-link>
-           <router-link :to="{name: 'categorias_edit', params: {id: categoria.id }}"><button>Editar</button></router-link>
+           <router-link v-if="categoria.id" :to="{name: 'categorias_show', params: {id: categoria.id }}"><button>Mostrar</button></router-link>
+           <router-link v-if="categoria.id" :to="{name: 'categorias_edit', params: {id: categoria.id }}"><button>Editar</button></router-link>
            <button @click.prevent="eliminar(categoria.id as number)">Eliminar</button>
           </td>
         </tr>

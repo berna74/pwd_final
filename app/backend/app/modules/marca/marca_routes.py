@@ -33,9 +33,10 @@ def crear():
             return  jsonify({'mensaje': "no se recibieron datos"})
         result = MarcaController.crear(data)
         if result:
-            return jsonify({'mensaje':'artículo creado correctamente'}), 201
+            marcas = MarcaController.get_all()
+            return jsonify(marcas), 201
         else:
-            return jsonify({'mensaje': 'error al crear un artículo'}),500
+            return jsonify({'mensaje': 'error al crear una marca'}),500
         
     except Exception as exc:
          return jsonify({'mensaje': f" error : {str(exc)}"}), 500
@@ -47,19 +48,21 @@ def modificar(id):
         data['id'] = id
         result = MarcaController.modificar(data)
         if result:
-            return jsonify({'mensaje':'artículo modificado correctamente'}), 200
+            marcas = MarcaController.get_all()
+            return jsonify(marcas), 200
         else:
-            return jsonify({'mensaje': 'error al modificar un artículo'}),500
+            return jsonify({'mensaje': 'error al modificar una marca'}),500
         
     except Exception as exc:
          return jsonify({'mensaje': f" error : {str(exc)}"}), 500
 
-@marca_bp.route("/articulos/id/<int:id>", methods=["DELETE"])
+@marca_bp.route("/marcas/<int:id>", methods=["DELETE"])
 def eliminar(id):
     try:
         result = MarcaController.eliminar(id)
         if result:
-            return jsonify({'mensaje':"marca eliminada con éxito"})
+            marcas = MarcaController.get_all()
+            return jsonify(marcas), 200
         return jsonify({'mensaje':"error al eliminar una marca"})
     except Exception as exc:
         return jsonify({'mensaje':f"error str{exc}"})

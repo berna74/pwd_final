@@ -29,11 +29,13 @@ def get_one(id):
 def crear():
     try:
         data = request.get_json()
+        print(f"DEBUG - Datos recibidos en crear proveedor: {data}")
         if data is None:
             return jsonify({'mensaje': "no se recibieron datos"})
         result = ProveedorController.crear(data)
         if result:
-            return jsonify({'mensaje': 'proveedor creado correctamente'}), 201
+            proveedores = ProveedorController.get_all()
+            return jsonify(proveedores), 201
         else:
             return jsonify({'mensaje': 'error al crear el proveedor'}), 500
     except Exception as exc:

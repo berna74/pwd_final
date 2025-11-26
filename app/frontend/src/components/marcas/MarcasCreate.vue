@@ -3,33 +3,40 @@
     <h2>Crear Marca</h2>
     <form @submit.prevent="crear">
       <label for="">Nueva Marca</label>
-      <input type="text" name="" v-model="marca.nombre" />
-      <button>Guardar</button>
+      <input type="text" name="" v-model="nuevaMarca.nombre" />
+      <div class="botonera">
+        <router-link :to="{ name: 'marcas_list' }">
+          <button type="button">Volver</button>
+        </router-link>
+        <button type="submit">Guardar</button>
+      </div>
     </form>
-
-    <router-link :to="{ name: 'marcas_list' }">
-      <button>Volver</button>
-    </router-link>
   </div>
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import useMarcaStore from '@/stores/marcas';
+import type { Marca } from '@/interfaces/Marca';
 
-const { marca } = toRefs(useMarcaStore());
+const router = useRouter();
 const { create } = useMarcaStore(); 
 
+const nuevaMarca = ref<Marca>({
+  id: 0,
+  nombre: ''
+});
+
 const crear = async () => { 
-  if (!marca.value.nombre) {
+  if (!nuevaMarca.value.nombre) {
     alert('Por favor, ingrese un nombre para la marca.');
     return;
   }
 
   try {
-    const response = await create(marca.value); 
-    marca.value.nombre = ''; 
-    alert('Marca creada exitosamente.');
+    await create(nuevaMarca.value); 
+    router.push({ name: 'marcas_list' });
   } catch (error) {
     console.error('Error al crear la marca:', error);
     alert('Hubo un error al crear la marca. Por favor, inténtalo de nuevo.');
@@ -45,5 +52,16 @@ const crear = async () => {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.botonera {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
 }
 </style>

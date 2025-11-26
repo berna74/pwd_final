@@ -86,8 +86,8 @@ class ProveedorModel:
         with cnx.cursor() as cursor:
             try:
                 cursor.execute(
-                    "UPDATE PROVEEDORES SET nombre = %s, telefono = %s, direccion = $s, email = %s WHERE id = %s",
-                    (self.nombre, self.telefono, self.email, self.direccion, self.id)
+                    "UPDATE PROVEEDORES SET nombre = %s, telefono = %s, direccion = %s, email = %s WHERE id = %s",
+                    (self.nombre, self.telefono, self.direccion, self.email, self.id)
                 )
                 cnx.commit()
                 return cursor.rowcount > 0

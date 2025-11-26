@@ -1,23 +1,29 @@
 const articulos_routes = [
     {
-        path: '/articulos', 
-        name: 'articulos_list',
-        component: ()=>import('../views/ArticulosView.vue')
-    },
-    {
-        path: '/articulos/:id/show',
-        name: 'articulos_show',
-        component: ()=>import('../components/articulos/ArticulosShow.vue')
-    },
-    {
-        path: '/articulos/create',
-        name: 'articulos_create',
-        component: ()=>import('../components/articulos/ArticulosCreate.vue')
-    },
-    {
-        path: '/articulos/:id/edit',
-        name: 'articulos_edit',
-        component: ()=>import('../components/articulos/ArticulosUpdate.vue')
-    }, 
+        path: '/articulos',
+        component: ()=>import('../views/ArticulosView.vue'),
+        children: [
+            {
+                path: '',
+                name: 'articulos_list',
+                component: ()=>import('../components/articulos/ArticulosList.vue')
+            },
+            {
+                path: ':id/show',
+                name: 'articulos_show',
+                component: ()=>import('../components/articulos/ArticulosShow.vue')
+            },
+            {
+                path: 'create',
+                name: 'articulos_create',
+                component: ()=>import('../components/articulos/ArticulosCreate.vue')
+            },
+            {
+                path: ':id/edit',
+                name: 'articulos_edit',
+                component: ()=>import('../components/articulos/ArticulosUpdate.vue')
+            }
+        ]
+    }
 ]
 export default articulos_routes

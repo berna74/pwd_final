@@ -29,11 +29,13 @@ def get_one(id):
 def crear():
     try:
         data = request.get_json()
+        print(f"DEBUG - Datos recibidos en crear categoria: {data}")
         if data is None:
             return jsonify({'mensaje': "no se recibieron datos"})
         result = CategoriaController.crear(data)
         if result:
-            return jsonify({'mensaje': 'categoría creada correctamente'}), 201
+            categorias = CategoriaController.get_all()
+            return jsonify(categorias), 201
         else:
             return jsonify({'mensaje': 'error al crear la categoría'}), 500
     except Exception as exc:

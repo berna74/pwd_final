@@ -2,7 +2,12 @@
   <div class="container">
   <h2>Marcas</h2>
   <router-link :to="{name: 'marcas_create'}"><button>Crear Marca</button></router-link>
-<table class="table table-striped mt-3">
+  
+  <div v-if="marcas.length === 0" class="empty-message">
+    <p>No hay marcas registradas. Crea una nueva marca para comenzar.</p>
+  </div>
+  
+<table v-else class="table table-striped mt-3">
     <thead>
       <tr>
         <th>ID</th>
@@ -15,9 +20,9 @@
         <td>{{ marca.id }}</td>
         <td>{{ marca.nombre }}</td>
         <td>
-         <router-link :to="{name: 'marcas_show', params: {id: marca.id }}"><button>Mostrar</button></router-link>
-         <router-link :to="{name: 'marcas_edit', params: {id: marca.id }}"><button>Editar</button></router-link>
-         <button @click.prevent="eliminar(marca.id as number)">Eliminar</button>
+         <router-link v-if="marca.id" :to="{name: 'marcas_show', params: {id: marca.id }}"><button>Mostrar</button></router-link>
+         <router-link v-if="marca.id" :to="{name: 'marcas_edit', params: {id: marca.id }}"><button>Editar</button></router-link>
+         <button v-if="marca.id" @click.prevent="eliminar(marca.id as number)">Eliminar</button>
         </td>
       </tr>
     </tbody>
@@ -65,5 +70,13 @@ async function eliminar (id: number) {
 }
 button {
   margin: 5px;
+}
+.empty-message {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: #f5f5f5;
+  border-radius: 4px;
+  text-align: center;
+  color: #666;
 }
 </style>

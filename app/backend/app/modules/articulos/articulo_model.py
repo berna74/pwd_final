@@ -87,7 +87,7 @@ class ArticuloModel:
         try:
             with cnx.cursor(dictionary=True) as cursor:
                 # Obtengo el artículo por ID
-                cursor.execute("SELECT * FROM articulos WHERE id = %s", (self.id,))
+                cursor.execute("SELECT * FROM articulos WHERE id = %s", (articulo_id,))
                 row = cursor.fetchone()
                 if row:
                        marca_row = MarcaModel.get_by_id(row['marca_id'])
@@ -108,5 +108,92 @@ class ArticuloModel:
                 return {}
         except Exception as exc:
             return {'mensaje': f"Error al buscar un artículo: {exc}"}
+        finally:
+            cnx.close()
+
+    def create(self):
+        cnx = ConectDB.get_connect()
+        if cnx is None:
+            return {'mensaje': 'No se pudo conectar a la base de datos'}
+        try:
+            with cnx.cursor() as cursor:
+                # Inserto el artículo
+                cursor.execute(
+                    "INSERT INTO ARTICULOS (descripcion, precio, stock, marca_id, proveedor_id) VALUES (%s, %s, %s, %s, %s)",
+                    (self.descripcion, self.precio, self.stock, self.marca.id, self.proveedor.id)
+                )
+                articulo_id = cursor.lastrowid
+                cnx.commit()
+                
+                # Inserto las categorías si existen
+                if self.categorias:
+                    for categoria in self.categorias:
+                        cursor.execute(
+                            "INSERT INTO ARTICULOS_CATEGORIAS (articulo_id, categoria_id) VALUES (%s, %s)",
+                            (articulo_id, categoria.id)
+                        )
+                    cnx.commit()
+                
+                return True if articulo_id > 0 else False
+                
+        except Exception as exc:
+            cnx.rollback()
+            return {'mensaje': f"Error al crear un artículo: {exc}"}
+        finally:
+            cnx.close()
+
+    def update(self):
+        cnx = ConectDB.get_connect()
+        if cnx is None:
+            return {'mensaje': 'No se pudo conectar a la base de datos'}
+        try:
+            with cnx.cursor() as cursor:
+                # Actualizo el artículo
+                cursor.execute(
+                    "UPDATE ARTICULOS SET descripcion = %s, precio = %s, stock = %s, marca_id = %s, proveedor_id = %s WHERE id = %s",
+                    (self.descripcion, self.precio, self.stock, self.marca.id, self.proveedor.id, self.id)
+                )
+                result = cursor.rowcount
+                
+                # Elimino las categorías existentes
+                cursor.execute("DELETE FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s", (self.id,))
+                
+                # Inserto las nuevas categorías
+                if self.categorias:
+                    for categoria in self.categorias:
+                        cursor.execute(
+                            "INSERT INTO ARTICULOS_CATEGORIAS (articulo_id, categoria_id) VALUES (%s, %s)",
+                            (self.id, categoria.id)
+                        )
+                
+                cnx.commit()
+                return True if result > 0 else False
+                
+        except Exception as exc:
+            cnx.rollback()
+            return {'mensaje': f"Error al actualizar un artículo: {exc}"}
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def delete(articulo_id: int):
+        cnx = ConectDB.get_connect()
+        if cnx is None:
+            return {'mensaje': 'No se pudo conectar a la base de datos'}
+        try:
+            with cnx.cursor() as cursor:
+                # Elimino las categorías asociadas primero
+                cursor.execute("DELETE FROM ARTICULOS_CATEGORIAS WHERE articulo_id = %s", (articulo_id,))
+                
+                # Elimino el artículo
+                cursor.execute("DELETE FROM ARTICULOS WHERE id = %s", (articulo_id,))
+                result = cursor.rowcount
+                cnx.commit()
+                
+                return True if result > 0 else False
+                
+        except Exception as exc:
+            cnx.rollback()
+            return {'mensaje': f"Error al eliminar un artículo: {exc}"}
         finally:
             cnx.close()

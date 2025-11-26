@@ -3,7 +3,7 @@ import {instance as axios} from '../plugins/axios';
 class ApiService {
   static async getAll(url: string) {
     try {
-      const response = await axios.get(url);
+      const response = await axios.get(`${url}/`);
       if (response) {
         return response.data;
       } 
@@ -26,19 +26,20 @@ class ApiService {
 
   static async create(url:string, data:object) {
   try {
-    const response = await axios.post(url, data)
+    const response = await axios.post(`${url}/`, data)
     if (response) {
       return response.data;
     }
   } catch (error) {
-    return error;
+    console.error('Error en create:', error);
+    throw error;
   }
 }
 
 
   static async update(url: string, id: number, data: object) {
   try {
-    const response = await axios.put(url + id, data)
+    const response = await axios.put(`${url}/${id}`, data)
     if (response) {
       return response.data;
     }

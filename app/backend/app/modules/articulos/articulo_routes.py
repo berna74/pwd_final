@@ -29,11 +29,13 @@ def get_one(id):
 def crear():
     try:
         data = request.get_json()
+        print(f"DEBUG - Datos recibidos en crear articulo: {data}")
         if data is None:
             return  jsonify({'mensaje': "no se recibieron datos"})
         result = ArticuloController.crear(data)
         if result:
-            return jsonify({'mensaje':'artículo creado correctamente'}), 201
+            articulos = ArticuloController.get_all()
+            return jsonify(articulos), 201
         else:
             return jsonify({'mensaje': 'error al crear un artículo'}),500
         
@@ -45,21 +47,25 @@ def modificar(id):
     try:
         data = request.get_json()
         data['id'] = id
+        print(f"DEBUG - Datos recibidos en modificar articulo: {data}")
         result = ArticuloController.modificar(data)
         if result:
-            return jsonify({'mensaje':'artículo modificado correctamente'}), 200
+            articulos = ArticuloController.get_all()
+            return jsonify(articulos), 200
         else:
             return jsonify({'mensaje': 'error al modificar un artículo'}),500
         
     except Exception as exc:
          return jsonify({'mensaje': f" error : {str(exc)}"}), 500
 
-@articulos_bp.route("/articulos/id/<int:id>", methods=["DELETE"])
+@articulos_bp.route("/articulos/<int:id>", methods=["DELETE"])
 def eliminar(id):
     try:
+        print(f"DEBUG - Eliminando artículo con ID: {id}")
         result = ArticuloController.eliminar(id)
         if result:
-            return jsonify({'mensaje':"artículo eliminado con éxito"})
-        return jsonify({'mensaje':"error al eliminar un artículo"})
+            articulos = ArticuloController.get_all()
+            return jsonify(articulos), 200
+        return jsonify({'mensaje':"error al eliminar un artículo"}), 500
     except Exception as exc:
-        return jsonify({'mensaje':f"error str{exc}"})
+        return jsonify({'mensaje':f"error: {str(exc)}"}), 500

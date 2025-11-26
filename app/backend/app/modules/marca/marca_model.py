@@ -61,8 +61,8 @@ class MarcaModel:
         with cnx.cursor() as cursor:
             try:
                 # ejecuto la query
-                cursor.execute("INSERT INTO MARCAS (descripcion) VALUES (%s)", 
-                               (self.descripcion))
+                cursor.execute("INSERT INTO MARCAS (nombre) VALUES (%s)", 
+                               (self.nombre,))
                 result = cursor.rowcount
                 cnx.commit()
                 if result > 0:
@@ -80,8 +80,8 @@ class MarcaModel:
         with cnx.cursor(dictionary=True) as cursor:
             try:
                 # ejecuto la query
-                cursor.execute("UPDATE ARTICULOS SET descripcion = %s", 
-                               (self.descripcion))
+                cursor.execute("UPDATE MARCAS SET nombre = %s WHERE id = %s", 
+                               (self.nombre, self.id))
                 result = cursor.rowcount
                 cnx.commit()
                 
@@ -91,7 +91,7 @@ class MarcaModel:
                 
             except Exception as exc:
                 cnx.rollback()
-                return {'mensaje':f" error al buscar una marca {exc}"}
+                return {'mensaje':f" error al actualizar una marca {exc}"}
             finally:
                 cnx.close()
                 

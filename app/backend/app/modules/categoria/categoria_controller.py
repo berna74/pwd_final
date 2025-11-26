@@ -11,12 +11,14 @@ class CategoriaController:
 
     @staticmethod
     def crear(data):
-        categoria = CategoriaModel(descripcion=data['descripcion'])
+        print(f"DEBUG - Controller crear recibe: {data}")
+        print(f"DEBUG - Intentando acceder a data['nombre']: {data.get('nombre', 'NO EXISTE')}")
+        categoria = CategoriaModel(nombre=data['nombre'])
         return categoria.create()
 
     @staticmethod
     def modificar(data):
-        categoria = CategoriaModel(id=data['id'], descripcion=data['descripcion'])
+        categoria = CategoriaModel(id=data['id'], nombre=data['nombre'])
         return categoria.update()
 
     @staticmethod

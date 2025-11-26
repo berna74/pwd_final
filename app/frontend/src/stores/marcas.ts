@@ -29,9 +29,16 @@ const useMarcaStore = defineStore('marcas',  () => {
         }
 
   async function create(marca: Marca) {
-    const data = await ApiService.create(url, marca);
-    if(data) {
-      marcas.value = data;
+    try {
+      const data = await ApiService.create(url, marca);
+      console.log('Datos recibidos del backend:', data);
+      if(data && Array.isArray(data)) {
+        marcas.value = data;
+        console.log('Marcas actualizadas:', marcas.value);
+      }
+    } catch (error) {
+      console.error('Error al crear marca:', error);
+      throw error;
     }
   }
   async function update(marca: Marca) {

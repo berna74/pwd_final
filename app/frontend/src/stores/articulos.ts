@@ -35,14 +35,32 @@ const useArticuloStore = defineStore('articulos',  () => {
         }
 
   async function create(articulo: Articulo) {
-    const data = await ApiService.create(url, articulo);
+    // Transformar el objeto para enviar solo los IDs al backend
+    const articuloParaBackend = {
+      descripcion: articulo.descripcion,
+      precio: articulo.precio,
+      stock: articulo.stock,
+      marca_id: articulo.marca?.id || 0,
+      proveedor_id: articulo.proveedor?.id || 0,
+      categorias: articulo.categorias?.map(c => c.id) || []
+    };
+    const data = await ApiService.create(url, articuloParaBackend);
     if(data) {
       articulos.value = data;
     }
   }
   async function update(articulo: Articulo) {
     if(articulo.id) {
-      const data = await ApiService.update(url, articulo.id, articulo);
+      // Transformar el objeto para enviar solo los IDs al backend
+      const articuloParaBackend = {
+        descripcion: articulo.descripcion,
+        precio: articulo.precio,
+        stock: articulo.stock,
+        marca_id: articulo.marca?.id || 0,
+        proveedor_id: articulo.proveedor?.id || 0,
+        categorias: articulo.categorias?.map(c => c.id) || []
+      };
+      const data = await ApiService.update(url, articulo.id, articuloParaBackend);
       if(data) {
         articulos.value = data;
        }

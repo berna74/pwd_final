@@ -20,19 +20,32 @@
   </template>
   
   <script setup lang="ts">
-  import { toRefs, onMounted } from 'vue'
+  import { toRefs, onMounted, ref } from 'vue'
   import useArticuloStore from '../../stores/articulos'
   import { useRoute } from 'vue-router'
+  import type { Articulo } from '@/interfaces/Articulo'
   
   const route = useRoute()
   const articuloStore = useArticuloStore()
-  const { articulo } = toRefs(useArticuloStore())
+  const { articulos } = toRefs(articuloStore)
+  const { getAll } = articuloStore
   
-  onMounted(() => {
+  const articulo = ref<Articulo>({
+    id: 0,
+    descripcion: '',
+    precio: 0,
+    stock: 0,
+    marca: { id: 0, nombre: '' },
+    proveedor: { id: 0, nombre: '' },
+    categorias: []
+  })
+  
+  onMounted(async () => {
+    await getAll()
     const id = route.params.id
-    console.log(id)
-    articulo.value = articulos.value.find((articulo) => articulo.id == parseInt(id as string)) ?? {
-      descripcion: '',
+    const found = articulos.value.find((a) => a.id == parseInt(id as string))
+    if (found) {
+      articulo.value = found
     }
   })
 </script>

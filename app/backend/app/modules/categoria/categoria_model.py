@@ -72,7 +72,7 @@ class CategoriaModel:
         cnx = ConectDB.get_connect()
         with cnx.cursor(dictionary=True) as cursor:
             try:
-                cursor.execute("UPDATE CATEGORIAS SET descripcion = %s WHERE id = %s", (self.descripcion, self.id))
+                cursor.execute("UPDATE CATEGORIAS SET nombre = %s WHERE id = %s", (self.nombre, self.id))
                 result = cursor.rowcount
                 cnx.commit()
                 if result > 0:
