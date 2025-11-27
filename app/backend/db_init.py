@@ -4,8 +4,8 @@ from mysql.connector import Error, errorcode
 import os
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path="/home/martin/PWD/tp7/app/backend/.env")
-DB_NAME = os.getenv("DB_NAME")
+load_dotenv()
+DB_NAME = os.getenv("DB_NAME", "club_tenis_db")
 
 DB_CONFIG = {
     'host': os.getenv("DB_HOST"),
@@ -16,139 +16,228 @@ DB_CONFIG = {
 }
 TABLES = {}
 SEEDS = {}
-TABLES['MARCAS'] = (
-    "CREATE TABLE `MARCAS` ("
-    "  `id` int(11) NOT NULL AUTO_INCREMENT,"
-    "  `nombre` varchar(50) NOT NULL,"
-    "  PRIMARY KEY (`id`)"
-    ") "
-)
+
 TABLES['CATEGORIAS'] = (
     "CREATE TABLE `CATEGORIAS` ("
     "  `id` int(11) NOT NULL AUTO_INCREMENT,"
     "  `nombre` varchar(50) NOT NULL,"
+    "  `descripcion` varchar(200),"
     "  PRIMARY KEY (`id`)"
     ") "
 )
-TABLES['PROVEEDORES'] = (
-    "CREATE TABLE `PROVEEDORES` ("
+
+TABLES['PROFESORES'] = (
+    "CREATE TABLE `PROFESORES` ("
     "  `id` int(11) NOT NULL AUTO_INCREMENT,"
     "  `nombre` varchar(50) NOT NULL,"
-    "  `telefono` varchar(50) NOT NULL,"
-    "  `direccion` varchar(50) NOT NULL,"
-    "  `email` varchar(50) NOT NULL,"
+    "  `apellido` varchar(50) NOT NULL,"
+    "  `especialidad` varchar(100) NOT NULL,"
+    "  `telefono` varchar(20) NOT NULL,"
+    "  `email` varchar(100) NOT NULL,"
     "  PRIMARY KEY (`id`)"
     ") "
 )
-TABLES['ARTICULOS'] = (
-    "CREATE TABLE `ARTICULOS` ("
+
+TABLES['SOCIOS'] = (
+    "CREATE TABLE `SOCIOS` ("
     "  `id` int(11) NOT NULL AUTO_INCREMENT,"
-    "  `descripcion` varchar(150) NOT NULL,"
-    " `precio` decimal(10,2) NOT NULL,"
-    "  `stock` int(11) NOT NULL,"
+    "  `nombre` varchar(50) NOT NULL,"
+    "  `apellido` varchar(50) NOT NULL,"
+    "  `dni` varchar(20) NOT NULL UNIQUE,"
+    "  `email` varchar(100) NOT NULL,"
+    "  `telefono` varchar(20) NOT NULL,"
+    "  `fecha_inscripcion` DATE NOT NULL,"
+    "  `profesor_id` int(11) NOT NULL,"
     "  PRIMARY KEY (`id`),"
-    "  `marca_id` int(11) NOT NULL,"
-    "  `proveedor_id` int(11) NOT NULL,"
-    " foreign key (`marca_id`) references MARCAS(id),"
-    " foreign key (`proveedor_id`) references PROVEEDORES(id)"
+    "  FOREIGN KEY (`profesor_id`) REFERENCES PROFESORES(id)"
     ") "
 )
-TABLES["ARTICULOS_CATEGORIAS"] = (
-    "CREATE TABLE `ARTICULOS_CATEGORIAS` ("
-    "  `articulo_id` int(11) NOT NULL,"
+
+TABLES["SOCIO_CATEGORIA"] = (
+    "CREATE TABLE `SOCIO_CATEGORIA` ("
+    "  `socio_id` int(11) NOT NULL,"
     "  `categoria_id` int(11) NOT NULL,"
-    " foreign key (`articulo_id`) references ARTICULOS(id),"
-    " foreign key (`categoria_id`) references CATEGORIAS(id)"
+    "  FOREIGN KEY (`socio_id`) REFERENCES SOCIOS(id),"
+    "  FOREIGN KEY (`categoria_id`) REFERENCES CATEGORIAS(id)"
     ") "
 )
 
-SEEDS['PROVEEDORES'] = (
-    "INSERT INTO PROVEEDORES (nombre, telefono, direccion, email) "
-    "VALUES (%s, %s, %s, %s)",
-    [
-        ('Tech Solutions SRL', '1144556677',
-         'Av. Córdoba 1234, CABA', 'contacto@techsolutions.com.ar'),
-        ('Informatica Total', '1167891234',
-         'Calle Falsa 456, Rosario', 'ventas@informatotal.com'),
-        ('Redes & Cía', '1133445566',
-         'Av. San Martín 789, Mendoza', 'info@redesycia.com'),
-        ('PC Express', '1122334455', 'Mitre 321, La Plata', 'soporte@pcexpress.com.ar'),
-        ('DataSoft Argentina', '1198765432',
-         'Belgrano 987, Córdoba', 'contacto@datasoft.com.ar'),
-        ('CompuMarket', '1177889900',
-         'Av. Rivadavia 4321, CABA', 'ventas@compumarket.com'),
-        ('TechnoWorld', '1100112233',
-         'Urquiza 1111, Mar del Plata', 'info@technoworld.com.ar'),
-        ('HardNet SRL', '1188997766',
-         'Alsina 654, Bahía Blanca', 'clientes@hardnet.com'),
-        ('BitWare', '1155667788', 'Av. Colon 2020, Salta', 'bitware@correo.com'),
-        ('Digital Point', '1133221100', 'San Juan 3030, Tucumán', 'digital@dp.com.ar')
-    ]
-)
-SEEDS['MARCAS'] = (
-    "INSERT INTO MARCAS (nombre) "
-    "VALUES (%s)",
-    [
-        ('HP',),
-        ('Dell',),
-        ('Lenovo',),
-        ('Asus',),
-        ('Acer',),
-        ('Apple',),
-        ('Samsung',),
-        ('LG',),
-        ('Sony',),
-        ('Toshiba',)
-    ]
-)
-SEEDS['CATEGORIAS'] = (
-    "INSERT INTO CATEGORIAS (nombre) "
-    "VALUES (%s)",
-    [
-        ('Notebooks y Laptops',),
-        ('Computadoras de Escritorio',),
-        ('Tablets',),
-        ('Monitores',),
-        ('Impresoras',),
-        ('Periféricos',),
-        ('Redes y Conectividad',),
-        ('Almacenamiento',),
-        ('Software',),
-        ('Componentes',)
-    ]
-)
-SEEDS['ARTICULOS'] = (
-    "INSERT INTO ARTICULOS (descripcion, precio, stock, marca_id, proveedor_id) "
-    "VALUES (%s, %s, %s, %s, %s)",
-    [
-        ('Notebook HP Pavilion 15.6" i5 8GB RAM 512GB SSD', 450000.00, 12, 1, 1),
-        ('PC de Escritorio Dell OptiPlex i7 16GB RAM 1TB HDD', 520000.00, 7, 2, 2),
-        ('Tablet Lenovo M10 HD 10.1" 32GB WiFi', 190000.00, 25, 3, 3),
-        ('Monitor Asus ProArt 27" 4K UHD IPS', 330000.00, 9, 4, 4),
-        ('Impresora Láser HP LaserJet Pro M404dn', 240000.00, 6, 1, 5),
-        ('Mouse Logitech M185 Inalámbrico', 8900.00, 60, 6, 6),
-        ('Router TP-Link Archer C6 AC1200', 21000.00, 35, 7, 7),
-        ('Disco Externo Seagate 2TB USB 3.0', 45000.00, 20, 8, 8),
-        ('Microsoft Office 365 Personal - Licencia 1 año', 18000.00, 15, 9, 9),
-        ('Memoria RAM Corsair Vengeance 8GB DDR4 3200MHz', 32000.00, 30, 10, 10)
-    ]
+TABLES['TURNOS'] = (
+    "CREATE TABLE `TURNOS` ("
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,"
+    "  `cancha` varchar(50) NOT NULL,"
+    "  `fecha` DATE NOT NULL,"
+    "  `hora_inicio` TIME NOT NULL,"
+    "  `hora_fin` TIME NOT NULL,"
+    "  `socio_reserva_id` int(11),"
+    "  `estado` varchar(20) DEFAULT 'disponible',"
+    "  PRIMARY KEY (`id`),"
+    "  FOREIGN KEY (`socio_reserva_id`) REFERENCES SOCIOS(id)"
+    ") "
 )
 
-SEEDS['ARTICULOS_CATEGORIAS'] = (
-    "INSERT INTO ARTICULOS_CATEGORIAS (articulo_id, categoria_id) "
+TABLES['TURNO_JUGADORES'] = (
+    "CREATE TABLE `TURNO_JUGADORES` ("
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,"
+    "  `turno_id` int(11) NOT NULL,"
+    "  `jugador_nombre` varchar(100) NOT NULL,"
+    "  PRIMARY KEY (`id`),"
+    "  FOREIGN KEY (`turno_id`) REFERENCES TURNOS(id) ON DELETE CASCADE"
+    ") "
+)
+
+TABLES['ALUMNOS'] = (
+    "CREATE TABLE `ALUMNOS` ("
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,"
+    "  `nombre` varchar(50) NOT NULL,"
+    "  `apellido` varchar(50) NOT NULL,"
+    "  `dni` varchar(20) NOT NULL UNIQUE,"
+    "  `email` varchar(100) NOT NULL,"
+    "  `telefono` varchar(20) NOT NULL,"
+    "  `fecha_inscripcion` DATE NOT NULL,"
+    "  `profesor_id` int(11) NOT NULL,"
+    "  `nivel` varchar(50),"
+    "  `activo` BOOLEAN DEFAULT TRUE,"
+    "  PRIMARY KEY (`id`),"
+    "  FOREIGN KEY (`profesor_id`) REFERENCES PROFESORES(id)"
+    ") "
+)
+
+TABLES['PAGOS'] = (
+    "CREATE TABLE `PAGOS` ("
+    "  `id` int(11) NOT NULL AUTO_INCREMENT,"
+    "  `tipo` varchar(20) NOT NULL,"
+    "  `monto` DECIMAL(10,2) NOT NULL,"
+    "  `fecha_pago` DATE NOT NULL,"
+    "  `mes` int(11) NOT NULL,"
+    "  `anio` int(11) NOT NULL,"
+    "  `socio_id` int(11),"
+    "  `alumno_id` int(11),"
+    "  `metodo_pago` varchar(50),"
+    "  `observaciones` TEXT,"
+    "  PRIMARY KEY (`id`),"
+    "  FOREIGN KEY (`socio_id`) REFERENCES SOCIOS(id),"
+    "  FOREIGN KEY (`alumno_id`) REFERENCES ALUMNOS(id)"
+    ") "
+)
+
+SEEDS['CATEGORIAS'] = (
+    "INSERT INTO CATEGORIAS (nombre, descripcion) "
     "VALUES (%s, %s)",
     [
-        (1, 1),
-        (2, 2),
-        (3, 3),
-        (4, 4),
-        (5, 5),
-        (6, 6),
-        (7, 7),
-        (8, 8),
-        (9, 9),
-        (10, 10)
-    ])
+        ('Junior', 'Socios menores de 18 años'),
+        ('Senior', 'Socios adultos de 18 a 60 años'),
+        ('Veterano', 'Socios mayores de 60 años'),
+        ('Profesional', 'Jugadores profesionales o de alta competencia'),
+        ('Recreativo', 'Socios que juegan ocasionalmente'),
+        ('Principiante', 'Socios que están aprendiendo a jugar'),
+        ('Familiar', 'Membresía familiar con descuentos')
+    ]
+)
+
+SEEDS['PROFESORES'] = (
+    "INSERT INTO PROFESORES (nombre, apellido, especialidad, telefono, email) "
+    "VALUES (%s, %s, %s, %s, %s)",
+    [
+        ('Carlos', 'Rodríguez', 'Técnica de Saque y Volea', '1144556677', 'carlos.rodriguez@clubtenis.com'),
+        ('María', 'Fernández', 'Entrenamiento Físico y Táctico', '1167891234', 'maria.fernandez@clubtenis.com'),
+        ('Roberto', 'González', 'Principiantes y Niños', '1133445566', 'roberto.gonzalez@clubtenis.com'),
+        ('Laura', 'Martínez', 'Alta Competencia', '1122334455', 'laura.martinez@clubtenis.com'),
+        ('Diego', 'López', 'Preparación Mental y Estrategia', '1198765432', 'diego.lopez@clubtenis.com')
+    ]
+)
+
+SEEDS['SOCIOS'] = (
+    "INSERT INTO SOCIOS (nombre, apellido, dni, email, telefono, fecha_inscripcion, profesor_id) "
+    "VALUES (%s, %s, %s, %s, %s, %s, %s)",
+    [
+        ('Juan', 'Pérez', '12345678', 'juan.perez@email.com', '1144556688', '2024-01-15', 1),
+        ('Ana', 'García', '23456789', 'ana.garcia@email.com', '1155667799', '2024-02-20', 2),
+        ('Luis', 'Fernández', '34567890', 'luis.fernandez@email.com', '1166778800', '2024-03-10', 3),
+        ('Sofia', 'Torres', '45678901', 'sofia.torres@email.com', '1177889911', '2024-04-05', 4),
+        ('Miguel', 'Ramírez', '56789012', 'miguel.ramirez@email.com', '1188990022', '2024-05-12', 5),
+        ('Carla', 'Sánchez', '67890123', 'carla.sanchez@email.com', '1199001133', '2024-06-18', 1),
+        ('Pedro', 'Moreno', '78901234', 'pedro.moreno@email.com', '1100112244', '2024-07-22', 3),
+        ('Julia', 'Romero', '89012345', 'julia.romero@email.com', '1111223355', '2024-08-30', 2)
+    ]
+)
+
+SEEDS['SOCIO_CATEGORIA'] = (
+    "INSERT INTO SOCIO_CATEGORIA (socio_id, categoria_id) "
+    "VALUES (%s, %s)",
+    [
+        (1, 2), (1, 5),
+        (2, 2), (2, 4),
+        (3, 1),
+        (4, 2), (4, 6),
+        (5, 3),
+        (6, 2), (6, 5),
+        (7, 1),
+        (8, 2), (8, 4)
+    ]
+)
+
+SEEDS['TURNOS'] = (
+    "INSERT INTO TURNOS (cancha, fecha, hora_inicio, hora_fin, socio_reserva_id, estado) "
+    "VALUES (%s, %s, %s, %s, %s, %s)",
+    [
+        ('Cancha Central', '2024-12-15', '09:00:00', '09:30:00', 1, 'reservado'),
+        ('Cancha Central', '2024-12-15', '09:30:00', '10:00:00', 1, 'reservado'),
+        ('Cancha 1', '2024-12-15', '10:00:00', '10:30:00', 2, 'reservado'),
+        ('Cancha 2', '2024-12-15', '14:00:00', '14:30:00', 3, 'reservado'),
+        ('Cancha 3', '2024-12-16', '16:00:00', '16:30:00', 4, 'reservado'),
+        ('Cancha 1', '2024-12-16', '17:00:00', '17:30:00', 5, 'reservado'),
+        ('Cancha Central', '2024-12-17', '08:00:00', '08:30:00', None, 'disponible'),
+        ('Cancha 2', '2024-12-17', '11:00:00', '11:30:00', None, 'disponible')
+    ]
+)
+
+SEEDS['TURNO_JUGADORES'] = (
+    "INSERT INTO TURNO_JUGADORES (turno_id, jugador_nombre) "
+    "VALUES (%s, %s)",
+    [
+        (1, 'Juan Pérez'),
+        (1, 'Ana García'),
+        (2, 'Juan Pérez'),
+        (2, 'Luis Fernández'),
+        (3, 'Ana García'),
+        (3, 'Sofia Torres'),
+        (4, 'Luis Fernández'),
+        (4, 'Miguel Ramírez'),
+        (5, 'Sofia Torres'),
+        (5, 'Carla Sánchez'),
+        (6, 'Miguel Ramírez'),
+        (6, 'Pedro Moreno')
+    ]
+)
+
+SEEDS['ALUMNOS'] = (
+    "INSERT INTO ALUMNOS (nombre, apellido, dni, email, telefono, fecha_inscripcion, profesor_id, nivel, activo) "
+    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+    [
+        ('Martín', 'Gómez', '11223344', 'martin.gomez@email.com', '1122334455', '2024-01-10', 3, 'Principiante', True),
+        ('Lucía', 'Herrera', '22334455', 'lucia.herrera@email.com', '1133445566', '2024-02-15', 3, 'Principiante', True),
+        ('Diego', 'Silva', '33445566', 'diego.silva@email.com', '1144556677', '2024-03-20', 1, 'Intermedio', True),
+        ('Valentina', 'Castro', '44556677', 'valentina.castro@email.com', '1155667788', '2024-04-25', 2, 'Intermedio', True),
+        ('Tomás', 'Ruiz', '55667788', 'tomas.ruiz@email.com', '1166778899', '2024-05-30', 4, 'Avanzado', True),
+        ('Emma', 'Vargas', '66778899', 'emma.vargas@email.com', '1177889900', '2024-06-10', 1, 'Intermedio', True)
+    ]
+)
+
+SEEDS['PAGOS'] = (
+    "INSERT INTO PAGOS (tipo, monto, fecha_pago, mes, anio, socio_id, alumno_id, metodo_pago, observaciones) "
+    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+    [
+        ('cuota_socio', 15000.00, '2024-11-05', 11, 2024, 1, None, 'Transferencia', 'Pago puntual'),
+        ('cuota_socio', 15000.00, '2024-11-08', 11, 2024, 2, None, 'Efectivo', None),
+        ('cuota_socio', 15000.00, '2024-11-10', 11, 2024, 3, None, 'Débito', None),
+        ('abono_clase', 8000.00, '2024-11-06', 11, 2024, None, 1, 'Efectivo', 'Clases con Roberto González'),
+        ('abono_clase', 8000.00, '2024-11-07', 11, 2024, None, 2, 'Transferencia', 'Clases con Roberto González'),
+        ('abono_clase', 10000.00, '2024-11-09', 11, 2024, None, 3, 'Efectivo', 'Clases con Carlos Rodríguez'),
+        ('cuota_socio', 15000.00, '2024-10-05', 10, 2024, 1, None, 'Transferencia', None),
+        ('abono_clase', 8000.00, '2024-10-06', 10, 2024, None, 1, 'Efectivo', None)
+    ]
+)
 
 
 def create_database(cursor):

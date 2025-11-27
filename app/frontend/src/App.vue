@@ -1,13 +1,12 @@
 <template>
   <nav>
-    <a href="/">
-      <img src="../public/images/logo.svg" alt="Logo" class="logo" />
-    </a>
-    <RouterLink :to="{ name: 'home' }">Home</RouterLink>
-    <RouterLink :to="{ name: 'articulos_list' }">Artículos</RouterLink>
-    <RouterLink :to="{ name: 'marcas_list' }">Marcas</RouterLink>
-    <RouterLink :to="{ name: 'proveedores_list' }">Proveedores</RouterLink>
+    <RouterLink :to="{ name: 'home' }">🎾 Club de Tenis</RouterLink>
+    <RouterLink :to="{ name: 'socios' }">Socios</RouterLink>
+    <RouterLink :to="{ name: 'alumnos' }">Alumnos</RouterLink>
+    <RouterLink :to="{ name: 'turnos' }">Turnos</RouterLink>
+    <RouterLink :to="{ name: 'profesores' }">Profesores</RouterLink>
     <RouterLink :to="{ name: 'categorias_list' }">Categorías</RouterLink>
+    <RouterLink :to="{ name: 'pagos' }">Pagos</RouterLink>
   </nav>
   <main>
     <RouterView />
@@ -16,22 +15,29 @@
 
 <style>
 nav {
-  background: #1976d2;
+  background: #022F9D;
   padding: 1rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  height: 4rem; /* Ajusta la altura del navbar */
+  height: 4rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 nav a {
-  color: #fff;
+  color: #FFFFFF;
   text-decoration: none;
   font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #00CDFF;
 }
 
 nav a.router-link-exact-active {
-  text-decoration: underline;
+  color: #FFCD00;
+  font-weight: 600;
 }
 
 .logo {

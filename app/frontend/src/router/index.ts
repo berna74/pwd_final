@@ -1,19 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import marcas_routes from './marcas_routes'
-import articulos_routes from './articulos_routes'
+import turnos_routes from './turnos_routes'
+import socios_routes from './socios_routes'
 import categorias_routes from './categorias_routes'
-import proveedores_routes from './proveedores_routes'
+import profesores_routes from './profesores_routes'
+import alumnos_routes from './alumnos_routes'
+import pagos_routes from './pagos_routes'
 
-// Asegúrate de que los nombres de las rutas estén en minúscula
-// y que los componentes se importen correctamente.
+// Club de Tenis - Sistema de Administración
 
 const routes = [
-  { path: '/', name: 'home', component: HomeView }, // nombre en minúscula
-  ...marcas_routes,
-  ...articulos_routes,
+  { path: '/', name: 'home', component: HomeView },
+  ...turnos_routes,
+  ...socios_routes,
   ...categorias_routes,
-  ...proveedores_routes 
+  ...profesores_routes,
+  ...alumnos_routes,
+  ...pagos_routes
 ]
 
 const router = createRouter({

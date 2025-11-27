@@ -1,21 +1,24 @@
 from app.database.conect_db import ConectDB
 
 class CategoriaModel:
-    def __init__(self, id: int = 0, nombre: str = ""):
+    def __init__(self, id: int = 0, nombre: str = "", descripcion: str = ""):
         self.id = id
         self.nombre = nombre
+        self.descripcion = descripcion
 
     def serializar(self) -> dict:
         return {
             "id": self.id,
-            "nombre": self.nombre
+            "nombre": self.nombre,
+            "descripcion": self.descripcion
         }
 
     @staticmethod
     def deserializar(data: dict):
         return CategoriaModel(
             id=data.get("id", 0),
-            nombre=data.get("nombre", "")
+            nombre=data.get("nombre", ""),
+            descripcion=data.get("descripcion", "")
         )
 
     @staticmethod
@@ -47,7 +50,7 @@ class CategoriaModel:
                 cursor.execute("SELECT * FROM CATEGORIAS WHERE id = %s", (id,))
                 row = cursor.fetchone()
                 if row:
-                    return CategoriaModel(id=row['id'], nombre=row['nombre'])
+                    return CategoriaModel(id=row['id'], nombre=row['nombre'], descripcion=row.get('descripcion', ''))
                 return None
         finally:
             cnx.close()
@@ -56,7 +59,7 @@ class CategoriaModel:
         cnx = ConectDB.get_connect()
         with cnx.cursor() as cursor:
             try:
-                cursor.execute("INSERT INTO CATEGORIAS (nombre) VALUES (%s)", (self.nombre,))
+                cursor.execute("INSERT INTO CATEGORIAS (nombre, descripcion) VALUES (%s, %s)", (self.nombre, self.descripcion))
                 result = cursor.rowcount
                 cnx.commit()
                 if result > 0:
@@ -72,7 +75,7 @@ class CategoriaModel:
         cnx = ConectDB.get_connect()
         with cnx.cursor(dictionary=True) as cursor:
             try:
-                cursor.execute("UPDATE CATEGORIAS SET nombre = %s WHERE id = %s", (self.nombre, self.id))
+                cursor.execute("UPDATE CATEGORIAS SET nombre = %s, descripcion = %s WHERE id = %s", (self.nombre, self.descripcion, self.id))
                 result = cursor.rowcount
                 cnx.commit()
                 if result > 0:

@@ -4,8 +4,8 @@ import os
 from dotenv import load_dotenv
 
 # Cargar las variables de entorno
-load_dotenv(dotenv_path="/home/martin/TP6_PWD/pwd2025-tp-6-backend-berna74/app/.env")
-database_name = os.getenv("DB_NAME")
+load_dotenv()
+database_name = os.getenv("DB_NAME", "club_tenis_db")
 
 # Configuración de la base de datos
 database_config = {
@@ -21,13 +21,23 @@ database_config = {
 print("DB_PORT:", os.getenv("DB_PORT"))
 print("database_config:", database_config)
 
-# Definición de las tablas a eliminar
+# Definición de las tablas a eliminar (orden importante: primero tablas dependientes)
 DROPPED_TB = {
-    "articulos_categorias": "DROP TABLE IF EXISTS articulos_categorias;",
-    "articulos": "DROP TABLE IF EXISTS articulos;",
-    "proveedores": "DROP TABLE IF EXISTS proveedores;",
-    "marcas": "DROP TABLE IF EXISTS marcas;",
-    "categorias": "DROP TABLE IF EXISTS categorias;"
+    "pagos": "DROP TABLE IF EXISTS PAGOS;",
+    "turno_jugadores": "DROP TABLE IF EXISTS TURNO_JUGADORES;",
+    "turnos": "DROP TABLE IF EXISTS TURNOS;",
+    "alumnos": "DROP TABLE IF EXISTS ALUMNOS;",
+    "socio_categoria": "DROP TABLE IF EXISTS SOCIO_CATEGORIA;",
+    "socios": "DROP TABLE IF EXISTS SOCIOS;",
+    "profesores": "DROP TABLE IF EXISTS PROFESORES;",
+    "instructores": "DROP TABLE IF EXISTS INSTRUCTORES;",
+    "canchas": "DROP TABLE IF EXISTS CANCHAS;",
+    "categorias": "DROP TABLE IF EXISTS CATEGORIAS;",
+    # Tablas viejas por si acaso
+    "articulos_categorias": "DROP TABLE IF EXISTS ARTICULOS_CATEGORIAS;",
+    "articulos": "DROP TABLE IF EXISTS ARTICULOS;",
+    "proveedores": "DROP TABLE IF EXISTS PROVEEDORES;",
+    "marcas": "DROP TABLE IF EXISTS MARCAS;"
 }
 
 # Función para eliminar las tablas

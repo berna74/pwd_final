@@ -1,31 +1,40 @@
 <template>
   <div class="home-container">
-    <img src="@/assets/logo.svg" alt="Logo Tienda" class="logo" />
-    <h1>Tienda de Informática</h1>
+    <h1>🎾 Club de Tenis</h1>
     <p>
-      Bienvenido al sistema de control de stock de artículos de informática.<br>
-      Administrá desde acá el inventario de artículos, las categorías, marcas y proveedores.
+      Bienvenido al sistema de administración del Club de Tenis.<br>
+      Gestiona socios, turnos, profesores y categorías desde un solo lugar.
     </p>
     <div class="home-grid">
-      <router-link to="/articulos" class="home-card">
-        <v-icon name="fa-desktop" scale="2" />
-        <strong>Artículos</strong>
-        <small>Gestión de productos y stock</small>
+      <router-link to="/socios" class="home-card">
+        <v-icon name="fa-users" scale="2" />
+        <strong>Socios</strong>
+        <small>Gestión de socios del club</small>
+      </router-link>
+      <router-link to="/alumnos" class="home-card">
+        <v-icon name="fa-graduation-cap" scale="2" />
+        <strong>Alumnos</strong>
+        <small>Gestión de alumnos de clases</small>
+      </router-link>
+      <router-link to="/turnos" class="home-card">
+        <v-icon name="fa-calendar-alt" scale="2" />
+        <strong>Turnos</strong>
+        <small>Reserva de turnos de cancha</small>
+      </router-link>
+      <router-link to="/profesores" class="home-card">
+        <v-icon name="fa-chalkboard-teacher" scale="2" />
+        <strong>Profesores</strong>
+        <small>Gestiona los profesores</small>
       </router-link>
       <router-link to="/categorias" class="home-card">
         <v-icon name="fa-folder-open" scale="2" />
         <strong>Categorías</strong>
-        <small>Organiza los artículos por tipo</small>
+        <small>Tipos de membresía</small>
       </router-link>
-      <router-link to="/marcas" class="home-card">
-        <v-icon name="fa-tags" scale="2" />
-        <strong>Marcas</strong>
-        <small>Gestiona las marcas disponibles</small>
-      </router-link>
-      <router-link to="/proveedores" class="home-card">
-        <v-icon name="fa-truck" scale="2" />
-        <strong>Proveedores</strong>
-        <small>Administra tus proveedores</small>
+      <router-link to="/pagos" class="home-card">
+        <v-icon name="fa-money-bill-wave" scale="2" />
+        <strong>Pagos</strong>
+        <small>Registro de pagos y abonos</small>
       </router-link>
     </div>
   </div>
@@ -40,9 +49,9 @@
   max-width: 700px;
   margin: 3rem auto;
   padding: 2rem;
-  background: #fff;
+  background: #FFFFFF;
   border-radius: 10px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 12px rgba(2, 47, 157, 0.15);
   text-align: center;
 }
 .logo {
@@ -51,7 +60,7 @@
 }
 .home-container h1 {
   margin-bottom: 0.5rem;
-  color: #1976d2;
+  color: #022F9D;
 }
 .home-container p {
   color: #444;
@@ -76,7 +85,7 @@
 }
 .home-card:hover {
   background: #e3f0fc;
-  box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+  box-shadow: 0 2px 8px rgba(2,47,157,0.15);
 }
 .home-card span {
   font-size: 2.2rem;
