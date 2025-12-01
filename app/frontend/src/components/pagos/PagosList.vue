@@ -18,7 +18,8 @@
             <th>Monto</th>
             <th>Fecha Pago</th>
             <th>Período</th>
-            <th>Beneficiario</th>
+            <th>Pagado por</th>
+            <th>Profesor</th>
             <th>Método</th>
             <th>Observaciones</th>
             <th>Acciones</th>
@@ -36,6 +37,7 @@
             <td>{{ formatDate(pago.fecha_pago) }}</td>
             <td>{{ formatPeriodo(pago.mes, pago.anio) }}</td>
             <td>{{ getBeneficiario(pago) }}</td>
+            <td>{{ pago.profesor_nombre || '-' }}</td>
             <td>{{ pago.metodo_pago || '-' }}</td>
             <td class="observaciones">{{ pago.observaciones || '-' }}</td>
             <td class="actions">
@@ -51,6 +53,7 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { usePagosStore } from '@/stores/pagos'
 import { storeToRefs } from 'pinia'
 import type { Pago } from '@/interfaces/Pago'
@@ -59,16 +62,22 @@ const emit = defineEmits(['create', 'show', 'edit'])
 const pagosStore = usePagosStore()
 const { pagos, loading, error } = storeToRefs(pagosStore)
 
+onMounted(() => {
+  pagosStore.fetchPagos()
+})
+
 function formatTipo(tipo: string): string {
-  const tipos: Record<string, string> = {
-    'cuota_socio': 'Cuota de Socio',
-    'abono_clase': 'Abono de Clase'
-  }
-  return tipos[tipo] || tipo
+  return tipo
 }
 
 function getTipoBadgeClass(tipo: string): string {
-  return tipo === 'cuota_socio' ? 'badge-socio' : 'badge-abono'
+  const classes: Record<string, string> = {
+    'Cuota Social': 'badge-cuota',
+    'Abono Mensual': 'badge-mensual',
+    'Abono Diario': 'badge-diario',
+    'Clase': 'badge-clase'
+  }
+  return classes[tipo] || 'badge-default'
 }
 
 function formatMonto(monto: number): string {
@@ -175,14 +184,29 @@ tbody tr:hover {
   display: inline-block;
 }
 
-.badge-socio {
+.badge-cuota {
   background-color: #022F9D;
   color: white;
 }
 
-.badge-abono {
+.badge-mensual {
+  background-color: #00CDFF;
+  color: #000000;
+}
+
+.badge-diario {
   background-color: #FFCD00;
   color: #000000;
+}
+
+.badge-clase {
+  background-color: #28a745;
+  color: white;
+}
+
+.badge-default {
+  background-color: #6c757d;
+  color: white;
 }
 
 .monto {

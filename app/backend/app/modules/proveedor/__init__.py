@@ -1,1 +1,0 @@
-from .proveedor_routes import proveedor_bp

@@ -51,12 +51,17 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useAlumnosStore } from '@/stores/alumnos'
 import { storeToRefs } from 'pinia'
 
 const emit = defineEmits(['create', 'show', 'edit'])
 const alumnosStore = useAlumnosStore()
 const { alumnos, loading, error } = storeToRefs(alumnosStore)
+
+onMounted(() => {
+  alumnosStore.fetchAlumnos()
+})
 
 async function handleDelete(id: number) {
   if (confirm('¿Está seguro de eliminar este alumno?')) {

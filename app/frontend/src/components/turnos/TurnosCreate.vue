@@ -4,19 +4,6 @@
       <h2>Nuevo Turno</h2>
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
-          <label>Cancha:</label>
-          <select v-model="formData.cancha" required>
-            <option value="">Seleccionar cancha</option>
-            <option value="Cancha Central">Cancha Central</option>
-            <option value="Cancha 1">Cancha 1</option>
-            <option value="Cancha 2">Cancha 2</option>
-            <option value="Cancha 3">Cancha 3</option>
-            <option value="Cancha 4">Cancha 4</option>
-            <option value="Cancha 5">Cancha 5</option>
-          </select>
-        </div>
-
-        <div class="form-group">
           <label>Fecha:</label>
           <input type="date" v-model="formData.fecha" required />
         </div>
@@ -71,7 +58,7 @@ const emit = defineEmits(['close', 'created'])
 const turnosStore = useTurnosStore()
 
 const formData = ref({
-  cancha: '',
+  cancha: 'Cancha Principal',
   fecha: '',
   hora_inicio: '',
   hora_fin: '',

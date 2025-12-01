@@ -49,7 +49,11 @@ const useCategoriaStore = defineStore('categorias',  () => {
       categorias.value = data;
     }
   }
-  return {categorias, categoria, getAll, getOne, create, update, destroy};
+  // Alias para compatibilidad
+  const fetchCategorias = getAll;
+
+  return {categorias, categoria, getAll, getOne, create, update, destroy, fetchCategorias};
 })
 
 export default useCategoriaStore;
+export { useCategoriaStore as useCategoriasStore };

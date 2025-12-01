@@ -1,0 +1,39 @@
+import { addIcon } from '@iconify/vue'
+
+// Registrar íconos personalizados
+// Ícono de paleta personalizado
+addIcon('custom:paleta', {
+  body: '<path fill="currentColor" d="M31.297 8.951c2.194-.028 4.395.796 6.059 2.449c3.325 3.297 3.301 8.663-.052 11.925c-1.671 1.653-3.859 2.465-6.069 2.428c-2.19-.036-4.388-.871-6.031-2.531c-3.325-3.299-3.306-8.637.046-11.894c1.546-1.548 3.675-2.298 5.751-2.377z m0.146 1.547c-1.829.088-3.682.794-5.084 2.198c-2.821 2.828-2.841 7.294-.045 10.097c2.814 2.803 7.266 2.827 10.072.024c2.815-2.802 2.833-7.285.041-10.113c-1.388-1.386-3.251-2.119-5.024-2.206z M31.858665 23.426149a1.3802651 1.2882415 0 1 0 2.76053 0a1.3802651 1.2882415 0 1 0 -2.76053 0z"/>',
+  width: 48,
+  height: 32,
+  left: 24,
+  top: 8
+})
+
+// Ejemplo: ícono de cancha
+addIcon('custom:cancha', {
+  body: '<rect x="2" y="2" width="20" height="20" rx="2" stroke="currentColor" fill="none" stroke-width="2"/><line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke="currentColor" fill="none" stroke-width="2"/>',
+  width: 24,
+  height: 24
+})
+
+// Ejemplo: ícono de jugador
+addIcon('custom:jugador', {
+  body: '<circle cx="12" cy="6" r="4" fill="currentColor"/><path d="M12 14c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z" fill="currentColor"/>',
+  width: 24,
+  height: 24
+})
+
+// Ejemplo: ícono de alumno con paleta
+addIcon('custom:alumno', {
+  body: '<path fill="currentColor" d="M31.297 8.951c2.194-.028 4.395.796 6.059 2.449c3.325 3.297 3.301 8.663-.052 11.925c-1.671 1.653-3.859 2.465-6.069 2.428c-2.19-.036-4.388-.871-6.031-2.531c-3.325-3.299-3.306-8.637.046-11.894c1.546-1.548 3.675-2.298 5.751-2.377z m0.146 1.547c-1.829.088-3.682.794-5.084 2.198c-2.821 2.828-2.841 7.294-.045 10.097c2.814 2.803 7.266 2.827 10.072.024c2.815-2.802 2.833-7.285.041-10.113c-1.388-1.386-3.251-2.119-5.024-2.206z M31.858665 23.426149a1.3802651 1.2882415 0 1 0 2.76053 0a1.3802651 1.2882415 0 1 0 -2.76053 0z"/>',
+  width: 48,
+  height: 32
+})
+
+// Puedes agregar más íconos personalizados aquí
+// addIcon('custom:mi-icono', {
+//   body: '<path d="...tu SVG path aquí..."/>',
+//   width: 24,
+//   height: 24
+// })

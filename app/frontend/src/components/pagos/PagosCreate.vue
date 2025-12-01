@@ -7,13 +7,15 @@
           <label>Tipo de Pago:*</label>
           <select v-model="formData.tipo" required @change="handleTipoChange">
             <option value="">Seleccionar</option>
-            <option value="cuota_socio">Cuota de Socio</option>
-            <option value="abono_clase">Abono de Clase</option>
+            <option value="Cuota Social">Cuota Social</option>
+            <option value="Abono Mensual">Abono Mensual</option>
+            <option value="Abono Diario">Abono Diario</option>
+            <option value="Clase">Clase</option>
           </select>
         </div>
 
-        <div class="form-group" v-if="formData.tipo === 'cuota_socio'">
-          <label>Socio:*</label>
+        <div class="form-group" v-if="formData.tipo === 'Cuota Social'">
+          <label>Pagado por (Socio):*</label>
           <select v-model.number="formData.socio_id" required>
             <option value="">Seleccionar socio</option>
             <option v-for="socio in socios" :key="socio.id" :value="socio.id">
@@ -22,12 +24,22 @@
           </select>
         </div>
 
-        <div class="form-group" v-if="formData.tipo === 'abono_clase'">
-          <label>Alumno:*</label>
+        <div class="form-group" v-if="formData.tipo === 'Abono Mensual' || formData.tipo === 'Abono Diario' || formData.tipo === 'Clase'">
+          <label>Pagado por (Alumno):*</label>
           <select v-model.number="formData.alumno_id" required>
             <option value="">Seleccionar alumno</option>
             <option v-for="alumno in alumnos" :key="alumno.id" :value="alumno.id">
               {{ alumno.nombre }} {{ alumno.apellido }} (DNI: {{ alumno.dni }})
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group" v-if="formData.tipo === 'Clase'">
+          <label>Profesor:*</label>
+          <select v-model.number="formData.profesor_id" required>
+            <option value="">Seleccionar profesor</option>
+            <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.id">
+              {{ profesor.nombre }} {{ profesor.apellido }}
             </option>
           </select>
         </div>
@@ -64,8 +76,6 @@
             <option value="Efectivo">Efectivo</option>
             <option value="Transferencia">Transferencia</option>
             <option value="Débito">Débito</option>
-            <option value="Crédito">Crédito</option>
-            <option value="Cheque">Cheque</option>
           </select>
         </div>
 
@@ -92,15 +102,18 @@ import { ref, onMounted } from 'vue'
 import { usePagosStore } from '@/stores/pagos'
 import { useSociosStore } from '@/stores/socios'
 import { useAlumnosStore } from '@/stores/alumnos'
+import { useProfesoresStore } from '@/stores/profesores'
 import { storeToRefs } from 'pinia'
 
 const emit = defineEmits(['close', 'created'])
 const pagosStore = usePagosStore()
 const sociosStore = useSociosStore()
 const alumnosStore = useAlumnosStore()
+const profesoresStore = useProfesoresStore()
 
 const { socios } = storeToRefs(sociosStore)
 const { alumnos } = storeToRefs(alumnosStore)
+const { profesores } = storeToRefs(profesoresStore)
 
 const currentDate = new Date()
 const formData = ref({
@@ -111,6 +124,7 @@ const formData = ref({
   anio: currentDate.getFullYear(),
   socio_id: null as number | null,
   alumno_id: null as number | null,
+  profesor_id: null as number | null,
   metodo_pago: '',
   observaciones: ''
 })
@@ -121,11 +135,13 @@ const error = ref<string | null>(null)
 onMounted(() => {
   sociosStore.fetchSocios()
   alumnosStore.fetchAlumnos()
+  profesoresStore.fetchProfesores()
 })
 
 function handleTipoChange() {
   formData.value.socio_id = null
   formData.value.alumno_id = null
+  formData.value.profesor_id = null
 }
 
 function getMesNombre(mes: number): string {
@@ -141,9 +157,13 @@ async function handleSubmit() {
   try {
     const pagoData = { ...formData.value }
     
-    if (pagoData.tipo === 'cuota_socio') {
+    if (pagoData.tipo === 'Cuota Social') {
       pagoData.alumno_id = null
-    } else if (pagoData.tipo === 'abono_clase') {
+      pagoData.profesor_id = null
+    } else if (pagoData.tipo === 'Abono Mensual' || pagoData.tipo === 'Abono Diario') {
+      pagoData.socio_id = null
+      pagoData.profesor_id = null
+    } else if (pagoData.tipo === 'Clase') {
       pagoData.socio_id = null
     }
     

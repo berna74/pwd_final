@@ -3,8 +3,8 @@ from app.database.conect_db import ConectDB
 class PagoModel:
     def __init__(self, id: int = 0, tipo: str = "", monto: float = 0.0, fecha_pago: str = "",
                  mes: int = 0, anio: int = 0, socio_id: int = None, alumno_id: int = None,
-                 metodo_pago: str = "", observaciones: str = "", 
-                 socio_nombre: str = "", alumno_nombre: str = ""):
+                 profesor_id: int = None, metodo_pago: str = "", observaciones: str = "", 
+                 socio_nombre: str = "", alumno_nombre: str = "", profesor_nombre: str = ""):
         self.id = id
         self.tipo = tipo
         self.monto = monto
@@ -13,10 +13,12 @@ class PagoModel:
         self.anio = anio
         self.socio_id = socio_id
         self.alumno_id = alumno_id
+        self.profesor_id = profesor_id
         self.metodo_pago = metodo_pago
         self.observaciones = observaciones
         self.socio_nombre = socio_nombre
         self.alumno_nombre = alumno_nombre
+        self.profesor_nombre = profesor_nombre
 
     def serializar(self) -> dict:
         return {
@@ -28,10 +30,12 @@ class PagoModel:
             'anio': self.anio,
             'socio_id': self.socio_id,
             'alumno_id': self.alumno_id,
+            'profesor_id': self.profesor_id,
             'metodo_pago': self.metodo_pago,
             'observaciones': self.observaciones,
             'socio_nombre': self.socio_nombre,
-            'alumno_nombre': self.alumno_nombre
+            'alumno_nombre': self.alumno_nombre,
+            'profesor_nombre': self.profesor_nombre
         }
 
     @staticmethod
@@ -44,10 +48,12 @@ class PagoModel:
                 cursor.execute("""
                     SELECT p.*, 
                            CONCAT(s.nombre, ' ', s.apellido) as socio_nombre,
-                           CONCAT(a.nombre, ' ', a.apellido) as alumno_nombre
+                           CONCAT(a.nombre, ' ', a.apellido) as alumno_nombre,
+                           CONCAT(pr.nombre, ' ', pr.apellido) as profesor_nombre
                     FROM PAGOS p
                     LEFT JOIN SOCIOS s ON p.socio_id = s.id
                     LEFT JOIN ALUMNOS a ON p.alumno_id = a.id
+                    LEFT JOIN PROFESORES pr ON p.profesor_id = pr.id
                     ORDER BY p.fecha_pago DESC, p.id DESC
                 """)
                 rows = cursor.fetchall()
@@ -62,10 +68,12 @@ class PagoModel:
                         anio=row['anio'],
                         socio_id=row['socio_id'],
                         alumno_id=row['alumno_id'],
+                        profesor_id=row['profesor_id'],
                         metodo_pago=row['metodo_pago'],
                         observaciones=row['observaciones'],
                         socio_nombre=row.get('socio_nombre', ''),
-                        alumno_nombre=row.get('alumno_nombre', '')
+                        alumno_nombre=row.get('alumno_nombre', ''),
+                        profesor_nombre=row.get('profesor_nombre', '')
                     )
                     pagos.append(pago.serializar())
                 return pagos
@@ -84,10 +92,12 @@ class PagoModel:
                 cursor.execute("""
                     SELECT p.*, 
                            CONCAT(s.nombre, ' ', s.apellido) as socio_nombre,
-                           CONCAT(a.nombre, ' ', a.apellido) as alumno_nombre
+                           CONCAT(a.nombre, ' ', a.apellido) as alumno_nombre,
+                           CONCAT(pr.nombre, ' ', pr.apellido) as profesor_nombre
                     FROM PAGOS p
                     LEFT JOIN SOCIOS s ON p.socio_id = s.id
                     LEFT JOIN ALUMNOS a ON p.alumno_id = a.id
+                    LEFT JOIN PROFESORES pr ON p.profesor_id = pr.id
                     WHERE p.id = %s
                 """, (id,))
                 row = cursor.fetchone()
@@ -103,10 +113,12 @@ class PagoModel:
                     anio=row['anio'],
                     socio_id=row['socio_id'],
                     alumno_id=row['alumno_id'],
+                    profesor_id=row['profesor_id'],
                     metodo_pago=row['metodo_pago'],
                     observaciones=row['observaciones'],
                     socio_nombre=row.get('socio_nombre', ''),
-                    alumno_nombre=row.get('alumno_nombre', '')
+                    alumno_nombre=row.get('alumno_nombre', ''),
+                    profesor_nombre=row.get('profesor_nombre', '')
                 )
                 return pago.serializar()
         except Exception as exc:
@@ -122,12 +134,12 @@ class PagoModel:
         try:
             with cnx.cursor() as cursor:
                 cursor.execute("""
-                    INSERT INTO PAGOS (tipo, monto, fecha_pago, mes, anio, socio_id, alumno_id, metodo_pago, observaciones)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO PAGOS (tipo, monto, fecha_pago, mes, anio, socio_id, alumno_id, profesor_id, metodo_pago, observaciones)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, (pago_data['tipo'], pago_data['monto'], pago_data['fecha_pago'],
                       pago_data['mes'], pago_data['anio'], pago_data.get('socio_id'),
-                      pago_data.get('alumno_id'), pago_data.get('metodo_pago'),
-                      pago_data.get('observaciones')))
+                      pago_data.get('alumno_id'), pago_data.get('profesor_id'),
+                      pago_data.get('metodo_pago'), pago_data.get('observaciones')))
                 
                 pago_id = cursor.lastrowid
                 cnx.commit()
@@ -148,12 +160,12 @@ class PagoModel:
                 cursor.execute("""
                     UPDATE PAGOS 
                     SET tipo = %s, monto = %s, fecha_pago = %s, mes = %s, anio = %s,
-                        socio_id = %s, alumno_id = %s, metodo_pago = %s, observaciones = %s
+                        socio_id = %s, alumno_id = %s, profesor_id = %s, metodo_pago = %s, observaciones = %s
                     WHERE id = %s
                 """, (pago_data['tipo'], pago_data['monto'], pago_data['fecha_pago'],
                       pago_data['mes'], pago_data['anio'], pago_data.get('socio_id'),
-                      pago_data.get('alumno_id'), pago_data.get('metodo_pago'),
-                      pago_data.get('observaciones'), id))
+                      pago_data.get('alumno_id'), pago_data.get('profesor_id'),
+                      pago_data.get('metodo_pago'), pago_data.get('observaciones'), id))
                 
                 cnx.commit()
                 return {'mensaje': 'Pago actualizado exitosamente'}

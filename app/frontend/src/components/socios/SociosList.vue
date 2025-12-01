@@ -5,6 +5,8 @@
       <button @click="showCreateForm = true" class="btn-primary">Nuevo Socio</button>
     </div>
 
+    <SociosCreate v-if="showCreateForm" @close="showCreateForm = false" @created="handleCreated" />
+
     <div v-if="loading" class="loading">Cargando socios...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else>
@@ -44,6 +46,7 @@
 import { ref, onMounted } from 'vue'
 import { useSociosStore } from '@/stores/socios'
 import { storeToRefs } from 'pinia'
+import SociosCreate from './SociosCreate.vue'
 
 const sociosStore = useSociosStore()
 const { socios, loading, error } = storeToRefs(sociosStore)
@@ -53,6 +56,11 @@ const showCreateForm = ref(false)
 onMounted(() => {
   sociosStore.fetchSocios()
 })
+
+function handleCreated() {
+  showCreateForm.value = false
+  sociosStore.fetchSocios()
+}
 
 function confirmDelete(id: number) {
   if (confirm('¿Está seguro de que desea eliminar este socio?')) {

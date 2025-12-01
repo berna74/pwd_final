@@ -14,7 +14,6 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>Cancha</th>
             <th>Fecha</th>
             <th>Horario</th>
             <th>Estado</th>
@@ -26,7 +25,6 @@
         <tbody>
           <tr v-for="turno in turnos" :key="turno.id">
             <td>{{ turno.id }}</td>
-            <td>{{ turno.cancha }}</td>
             <td>{{ formatDate(turno.fecha) }}</td>
             <td>{{ turno.hora_inicio }} - {{ turno.hora_fin }}</td>
             <td>

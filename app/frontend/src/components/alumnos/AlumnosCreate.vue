@@ -35,7 +35,7 @@
           <div class="form-group">
             <label>Profesor:*</label>
             <select v-model.number="formData.profesor_id" required>
-              <option value="">Seleccionar</option>
+              <option :value="null" disabled>Seleccionar</option>
               <option v-for="prof in profesores" :key="prof.id" :value="prof.id">
                 {{ prof.nombre }} {{ prof.apellido }}
               </option>
@@ -87,7 +87,7 @@ const formData = ref({
   email: '',
   telefono: '',
   fecha_inscripcion: new Date().toISOString().split('T')[0],
-  profesor_id: 0,
+  profesor_id: null as number | null,
   nivel: '',
   activo: true
 })
@@ -102,11 +102,19 @@ onMounted(() => {
 async function handleSubmit() {
   submitLoading.value = true
   error.value = null
+  
+  if (!formData.value.profesor_id) {
+    error.value = 'Debe seleccionar un profesor'
+    submitLoading.value = false
+    return
+  }
+  
   try {
     await alumnosStore.createAlumno(formData.value)
     emit('created')
   } catch (e: any) {
     error.value = e.response?.data?.mensaje || 'Error al crear alumno'
+    console.error('Error completo:', e)
   } finally {
     submitLoading.value = false
   }
